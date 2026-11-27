@@ -2,25 +2,61 @@
 const contactForm = document.getElementById("contactForm");
 const formResponse = document.getElementById("formResponse");
 
-contactForm.addEventListener("submit", function (event) {
+const nameInput = document.getElementById("name");
+const emailInput = document.getElementById("email");
+const subjectInput = document.getElementById("subject");
+const messageInput = document.getElementById("message");
 
-    event.preventDefault();
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const subject = document.getElementById("subject").value.trim();
-    const message = document.getElementById("message").value.trim();
+// Display validation feedback using CSS classes.
+function showResponse(message, type) {
+    formResponse.classList.remove("error", "success");
+    formResponse.classList.add(type);
+    formResponse.textContent = message;
+}
 
-    if (name === "" || email === "" ||
-        subject === "" || message === "") {
+// Check that all required DOM elements exist.
+if (
+    contactForm &&
+    formResponse &&
+    nameInput &&
+    emailInput &&
+    subjectInput &&
+    messageInput
+) {
+    contactForm.addEventListener("input", function () {
+        formResponse.textContent = "";
+        formResponse.classList.remove("error", "success");
+    });
 
-        formResponse.style.color = "red";
-        formResponse.textContent = "Please fill in all fields.";
-        return;
-    }
+    contactForm.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-    formResponse.style.color = "green";
-    formResponse.textContent = "Form validated successfully!";
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const subject = subjectInput.value.trim();
+        const message = messageInput.value.trim();
 
-    contactForm.reset();
-});
+        // Check for empty or whitespace-only fields.
+        if (!name || !email || !subject || !message) {
+            showResponse("Please fill in all fields.", "error");
+            return;
+        }
+
+        // Validate the email address format.
+        if (!emailPattern.test(email)) {
+            showResponse(
+                "Please enter a valid email address.",
+                "error"
+            );
+            return;
+        }
+
+        // Display success feedback.
+        showResponse("Form validated successfully!", "success");
+
+        // Clear the form after successful validation.
+        contactForm.reset();
+    });
+}
