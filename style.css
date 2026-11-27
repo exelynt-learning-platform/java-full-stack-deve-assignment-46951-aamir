@@ -94,3 +94,10 @@ button:hover {
         font-size: 28px;
     }
 }
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
